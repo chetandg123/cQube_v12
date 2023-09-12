@@ -282,8 +282,6 @@ class AdminConsole(Base):
     def check_navigation_to_data_debugger(self):
         self.driver.find_element(By.ID, self.debugger).click()
         time.sleep(2)
-        self.driver.switch_to.window(self.driver.window_handles[1])
-        time.sleep(2)
         if 'debugger' in self.driver.current_url:
             print(" Data Debugger Dashboard is displayed ")
             assert True
@@ -294,11 +292,9 @@ class AdminConsole(Base):
         return self.count
 
     def check_navigation_to_schema_generator(self):
-        self.driver.find_element(By.ID, self.debugger).click()
+        self.driver.find_element(By.ID, self.schema_generator_icon).click()
         time.sleep(2)
-        self.driver.switch_to.window(self.driver.window_handles[1])
-        time.sleep(2)
-        if 'generator' in self.driver.current_url:
+        if 'schema-generator' in self.driver.current_url:
             print(" Schema Generator Dashboard is displayed ")
             assert True
         else:
