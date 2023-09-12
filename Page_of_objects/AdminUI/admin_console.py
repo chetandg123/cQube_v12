@@ -16,7 +16,7 @@ class AdminConsole(Base):
     debugger = "dashboardCard1"
     schema_generator_icon = "dashboardCard2"
     user_logo_menu = "user_menulist"
-    hamburger_menu = "hamburger"
+    hamburger_menu = "menuToggler"
     logout_btn = "logout"
     a = "State Vidya Samiksha Kendra"
     home_btn = "home"
@@ -26,6 +26,14 @@ class AdminConsole(Base):
     upload_btn = 'fileupload'
     file_path = ''
     download_btn = 'download'
+
+    System_monitoring_card = 'System monitoring'
+    Data_debugger_card = 'Data debugger'
+    Schema_generator_card = 'Schema generator'
+    li_tag = 'li'
+    dashboardLink = 'dashboardLink'
+    debuggerLink = 'debuggerLink'
+    schemaLink = 'schemaLink'
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -69,6 +77,12 @@ class AdminConsole(Base):
         time.sleep(2)
         self.click(self.login_btn)
 
+    def verify_invalid_username_and_password(self):
+        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_negative_username())
+        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_negative_password())
+        time.sleep(2)
+        self.click(self.login_btn)
+
     def open_login_page_blank_username(self):
         self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_username_blank())
         self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_password())
@@ -90,7 +104,7 @@ class AdminConsole(Base):
     def check_admin_console_login_and_logout(self):
         self.login_to_admin_console()
         time.sleep(2)
-        self.driver.find_element(By.ID,self.logout_btn).click()
+        self.driver.find_element(By.ID, self.logout_btn).click()
         time.sleep(2)
         if 'login' in self.driver.current_url:
             print('Login & Logout buttons are working as expected ')
@@ -102,6 +116,11 @@ class AdminConsole(Base):
 
     def click_on_hamburger_menu_button(self):
         self.driver.find_element(By.ID, self.hamburger_menu).click()
+
+    def get_count_of_menu_buttons(self):
+        res = self.driver.find_elements(By.TAG_NAME, self.li_tag)
+        count = len(res)
+        return count
 
     def click_on_health_monitor_dashboard_icon(self):
         self.driver.find_element(By.ID, self.health_monitor).click()
@@ -126,8 +145,10 @@ class AdminConsole(Base):
             print('Logout button is working as expected.')
             assert True
         else:
+            self.cont = self.count + 1
             print('Logout button is not working!!! ')
             assert False
+        return self.count
 
     def check_dropdown_options(self):
         dropdown = Select(self.driver.find_element(By.ID, self.schemas))
@@ -219,3 +240,99 @@ class AdminConsole(Base):
             assert False
         return self.count
 
+    def verify_admin_console_dashboard_cards(self):
+        if self.System_monitoring_card in self.driver.page_source:
+            print(self.System_monitoring_card, 'card is Displayed ')
+            assert True
+        else:
+            self.count = self.count + 1
+            print(self.System_monitoring_card, ' card is not displayed')
+            assert False
+        if self.Data_debugger_card in self.driver.page_source:
+            print(self.Data_debugger_card, 'card is Displayed ')
+            assert True
+        else:
+            self.count = self.count + 1
+            print(self.Data_debugger_card, ' card is not displayed')
+            assert False
+
+        if self.Schema_generator_card in self.driver.page_source:
+            print(self.Schema_generator_card, 'card is Displayed ')
+            assert True
+        else:
+            self.count = self.count + 1
+            print(self.Schema_generator_card, ' card is not displayed')
+            assert False
+        return self.count
+
+    def check_navigation_to_system_monitor(self):
+        self.driver.find_element(By.ID, self.health_monitor).click()
+        time.sleep(2)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        time.sleep(2)
+        if 'grafana' in self.driver.current_url:
+            print("Grafana Login page is displayed ")
+            assert True
+        else:
+            print(' Grafana login page is not displayed ')
+            self.count = self.count + 1
+            assert False
+        return self.count
+
+    def check_navigation_to_data_debugger(self):
+        self.driver.find_element(By.ID, self.debugger).click()
+        time.sleep(2)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        time.sleep(2)
+        if 'debugger' in self.driver.current_url:
+            print(" Data Debugger Dashboard is displayed ")
+            assert True
+        else:
+            print(' Data Debugger Dashboard is not displayed ')
+            self.count = self.count + 1
+            assert False
+        return self.count
+
+    def check_navigation_to_schema_generator(self):
+        self.driver.find_element(By.ID, self.debugger).click()
+        time.sleep(2)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        time.sleep(2)
+        if 'generator' in self.driver.current_url:
+            print(" Schema Generator Dashboard is displayed ")
+            assert True
+        else:
+            print(' Schema Generator Dashboard is not displayed ')
+            self.count = self.count + 1
+            assert False
+        return self.count
+
+    def click_on_dashboard_button_from_menu(self):
+        self.click_on_hamburger_menu_button()
+        self.driver.find_element(By.ID, self.dashboardLink).click()
+        if 'dashboard' in self.driver.current_url:
+            assert True
+        else:
+            self.count = self.count + 1
+            assert False
+        return self.count
+
+    def click_on_debugger_button_from_menu(self):
+        self.click_on_hamburger_menu_button()
+        self.driver.find_element(By.ID, self.debuggerLink).click()
+        if 'debugger' in self.driver.current_url:
+            assert True
+        else:
+            self.count = self.count + 1
+            assert False
+        return self.count
+
+    def click_on_schema_generator_button_from_menu(self):
+        self.click_on_hamburger_menu_button()
+        self.driver.find_element(By.ID, self.schemaLink).click()
+        if 'schema-generator' in self.driver.current_url:
+            assert True
+        else:
+            self.count = self.count + 1
+            assert False
+        return self.count

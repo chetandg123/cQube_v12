@@ -1,6 +1,8 @@
 import logging
 import time
 
+from selenium.webdriver.common.by import By
+
 from Page_of_objects.AdminUI.admin_console import AdminConsole
 from Testcases.conftest import ConfTest
 from Utilities import CustomLogger
@@ -22,13 +24,15 @@ class TestDashboard:
         cls.driver.implicitly_wait(30)
         cls.admin = AdminConsole(cls.driver)
         cls.admin.open_cqube_admin_application()
-        cls.logger = CustomLogger.setup_logger('Admin_Dashboard', ReadConfig.get_logs_directory() + "/admin_console.log",
+        cls.logger = CustomLogger.setup_logger('Admin_Dashboard',
+                                               ReadConfig.get_logs_directory() + "/admin_console.log",
                                                level=logging.DEBUG)
 
     ''' Verify the navigated to admin login page '''
+
     def test_admin_login_page(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_001 Testing Started *****************")
-        if 'adminconsole' in self.driver.current_url and 'Admin Login' in self.driver.page_source:
+        if 'admin' in self.driver.current_url and 'State Vidya Samiksha Kendra' in self.driver.page_source:
             print('Admin Console Login page is Displayed')
             self.logger.log("Admin Console URL is Working as Expected ")
             assert True
@@ -39,16 +43,17 @@ class TestDashboard:
         self.logger.info("*************** Tc_cQube_AdminConsole_001 Testing Completed *****************")
 
     ''' Verify the Title of the Page '''
-    def test_validate_title(self):
+
+    def test_validate_admin_login_screen(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_002 Testing Started *****************")
-        if self.admin.a in self.driver.page_source:
+        if 'admin/login' in self.driver.current_url:
             self.logger.log("*************** Title is displaying *****************")
         else:
             self.logger.error("********************* Title is not displaying ***********")
             assert False
         self.logger.info("*************** Tc_cQube_AdminConsole_002 Testing completed *****************")
 
-    def test_input_fileds_username_password(self):
+    def test_input_fields_username_password(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_003 Testing Started *****************")
         result = self.admin.check_input_fields_accepted_values()
         if result == 0:
@@ -89,93 +94,142 @@ class TestDashboard:
             assert False
         self.logger.info("*************** Tc_cQube_AdminConsole_006 Testing Started *****************")
 
-
-
-
-
-
-
-
-
-
-
-    def test_loginpage(self):
-        self.logger.info("*************** Tc_cQube_loginpage_004 Testing Started *****************")
-        self.loginpage.open_cqube_application()
-        self.loginpage.open_login_page()
-        time.sleep(4)
-        if "home" in self.driver.current_url:
+    def test_invalid_username_and_valid_password(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_007 Testing Started *****************")
+        self.admin.open_login_page_invalid_username()
+        if 'Invalid credentials' in self.driver.page_source:
+            self.logger.info(" Invalid Credentials Error message is displayed ")
             assert True
-            self.logger.info("***********  Login screen is displayed ************** ")
         else:
-            self.logger.error("************* Login page is not displayed **************")
+            self.logger.error(" Invalid Credentials Error message is displayed ")
             assert False
-        self.logger.info("*************** Tc_cQube_loginpage_004  Testing Ended *****************")
+        self.logger.info("*************** Tc_cQube_AdminConsole_007 Testing Started *****************")
 
-    '''scripts to check the login is happening or not with invalid credintials'''
-
-    def test_check_whether_landing_page_is_not_displayed_user_is_in_login_page(self):
-        self.logger.info("*************** Tc_cQube_loginpage_005 Testing Started *****************")
-        self.loginpage.open_cqube_application()
-        self.loginpage.open_login_page_invalid_password()
-        time.sleep(3)
-        if "Invalid Credentials" in self.driver.page_source:
+    def test_valid_username_invalid_password(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_008 Testing Started *****************")
+        self.admin.open_login_page_invalid_password()
+        if 'Invalid credentials' in self.driver.page_source:
+            self.logger.info(" Invalid Credentials Error message is displayed ")
             assert True
-            self.logger.info("landing page is not displayed")
-
         else:
-            self.logger.error("user is in login page")
+            self.logger.error(" Invalid Credentials Error message is displayed ")
             assert False
-        self.logger.info("*************** Tc_cQube_loginpage_005  Testing Ended *****************")
+        self.logger.info("*************** Tc_cQube_AdminConsole_008 Testing Started *****************")
 
-    '''scripts to check the login is happening or not with invalid credintials'''
+    ''' Admin Console Dashboard Scripts '''
 
-
-    def test_check_whether_landing_page_is_not_displayed_user_is_in_login_page1(self):
-        self.logger.info("*************** Tc_cQube_loginpage_006 Testing Started *****************")
-        self.loginpage.open_cqube_application()
-        self.loginpage.open_login_page_invalid_username()
-        time.sleep(3)
-        if "Invalid Credentials" in self.driver.page_source:
+    def test_menu_dashboard_cards_presence(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_009 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        result = self.admin.verify_admin_console_dashboard_cards()
+        if result == 0:
+            self.logger.info(" Admin Console Dashboard Cards are Displayed ")
             assert True
-            self.logger.info("landing page is not displayed")
         else:
-            self.logger.error("user is in login page")
+            self.logger.error(" Admin Console - Dashboard Cards are Missing ")
             assert False
-        self.logger.info("*************** Tc_cQube_loginpage_006  Testing Ended *****************")
+        self.logger.info("*************** Tc_cQube_AdminConsole_009 Testing Started *****************")
 
-    '''scripts to check the login is happening or not with invalid credintials'''
-
-    def test_check_whether_landing_page_is_not_displayed_user_is_in_login_page0(self):
-        self.logger.info("*************** Tc_cQube_loginpage_007 Testing Started *****************")
-        self.loginpage.open_cqube_application()
-        self.loginpage.open_login_page_blank_password()
-        time.sleep(3)
-        if "Invalid Credentials" in self.driver.page_source:
+    def test_click_on_system_monitor_card(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_010 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        result = self.admin.check_navigation_to_system_monitor()
+        if result == 0:
+            self.logger.info(" System Monitor Card is Working ")
             assert True
-            self.logger.info("landing page is not displayed")
         else:
-            self.logger.error("user is in login page")
+            self.logger.error(" System Monitor Card is Not Working ")
             assert False
-        self.logger.info("*************** Tc_cQube_loginpage_007  Testing Ended *****************")
+        self.logger.info("*************** Tc_cQube_AdminConsole_010 Testing Started *****************")
 
-    '''scripts to check the login is happening or not with invalid credintials'''
-
-    def test_check_whether_landing_page_is_not_displayed_user_is_in_login_page2(self):
-        self.logger.info("*************** Tc_cQube_loginpage_008 Testing Started *****************")
-        self.loginpage.open_cqube_application()
-        self.loginpage.open_login_page_blank_username_password()
-        time.sleep(3)
-        if "Invalid Credentials" in self.driver.page_source:
+    def test_click_on_data_debugger_card(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_011 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        result = self.admin.check_navigation_to_data_debugger()
+        if result == 0:
+            self.logger.info(" Data Debugger Card is Working ")
             assert True
-            self.logger.info("landing page is not displayed")
         else:
-            self.logger.error("user is in login page")
+            self.logger.error(" Data Debugger Card is Not Working ")
             assert False
-        self.logger.info("*************** Tc_cQube_loginpage_008  Testing Ended *****************")
+        self.logger.info("*************** Tc_cQube_AdminConsole_011 Testing Started *****************")
 
+    def test_check_navigation_to_schema_generator(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_012 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        result = self.admin.check_navigation_to_schema_generator()
+        if result == 0:
+            self.logger.info(" Schema Generator Card is Working ")
+            assert True
+        else:
+            self.logger.error(" Schema Generator Card is Not Working ")
+            assert False
+        self.logger.info("*************** Tc_cQube_AdminConsole_012 Testing Started *****************")
 
+    def test_click_on_hamburger_menu(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_013 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        self.admin.click_on_hamburger_menu_button()
+        result = self.admin.get_count_of_menu_buttons()
+        if result != 0 and result > 0:
+            self.logger.info(" Hamburger Menu having Options ", result)
+            assert True
+        else:
+            self.logger.error(" Hamburger Menu Options are not displaying ", result)
+            assert False
+        self.logger.info("*************** Tc_cQube_AdminConsole_013 Testing Started *****************")
 
+    def test_click_on_dashboard_link(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_014 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        result = self.admin.check_navigation_to_data_debugger()
+        res = self.admin.click_on_dashboard_button_from_menu()
+        if res == 0:
+            self.logger.info(" Dashboard Menu button is working ")
+            assert True
+        else:
+            self.logger.error(" Dashboard Menu button is not working ")
+            assert False
+        self.logger.info("*************** Tc_cQube_AdminConsole_014 Testing Started *****************")
 
+    def test_click_on_data_debugger_link(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_015 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        res = self.admin.click_on_debugger_button_from_menu()
+        if res == 0:
+            self.logger.info(" Debugger Menu button is working ")
+            assert True
+        else:
+            self.logger.error(" Debugger Menu button is not working ")
+            assert False
+        self.logger.info("*************** Tc_cQube_AdminConsole_015 Testing Started *****************")
 
+    def test_click_on_schema_generator_link(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_016 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        res = self.admin.click_on_schema_generator_button_from_menu()
+        if res == 0:
+            self.logger.info(" Schema Generator Menu button is working ")
+            assert True
+        else:
+            self.logger.error(" Schema Generator Menu button is not working ")
+            assert False
+        self.logger.info("*************** Tc_cQube_AdminConsole_016 Testing Started *****************")
 
+    def test_click_on_user_icon(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_017 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        self.admin.click_on_the_user_logo()
+        self.logger.info("*************** Tc_cQube_AdminConsole_017 Testing Started *****************")
+
+    def test_click_on_logout_button(self):
+        self.logger.info("*************** Tc_cQube_AdminConsole_018 Testing Started *****************")
+        self.admin.login_to_admin_console()
+        result = self.admin.click_on_logout_button()
+        if result == 0:
+            self.logger.info(" Logout button is working ")
+            assert True
+        else:
+            self.logger.error(" Logout button is not working ")
+            assert False
+        self.logger.info("*************** Tc_cQube_AdminConsole_018 Testing Started *****************")
