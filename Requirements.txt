@@ -1,0 +1,17 @@
+pandas
+numpy
+selenium
+configparser
+pathlib
+pytest-html
+pyselenium
+pytest-logger
+pytest-logging
+pytest-report
+pytest==7.2.0
+pytest-cov
+pytest-html
+pytest-mock
+pytest-run-changed
+pytest-subprocess
+pytest-testmon
