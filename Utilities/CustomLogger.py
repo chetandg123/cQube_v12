@@ -12,7 +12,7 @@ def setup_logger(logger_name, log_file, level=logging.WARNING):
     # Configure log file
     logger = logging.getLogger(logger_name)
     formatter = logging.Formatter('%(asctime)s :%(levelname)s : %(name)s :%(message)s')
-    file_handler = logging.FileHandler(log_file, mode='w')
+    file_handler = logging.FileHandler(log_file, mode='a')
     file_handler.setFormatter(formatter)
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)

@@ -2,7 +2,6 @@ import logging
 import os
 import time
 
-
 import sys
 
 sys.path.append(os.getcwd())
@@ -40,7 +39,6 @@ class TestDashboard:
     #         self.logger.error("********************* Navigation to Homepage failed  ***********")
     #         assert False
     #     self.logger.info("*************** Tc_cQube_homepage_001 Testing completed *****************")
-
 
     '''Check whether title is displaying or not'''
 
@@ -106,7 +104,6 @@ class TestDashboard:
             assert False
         self.logger.info("*************** Tc_cQube_homepage_006 Testing Ended *****************")
 
-
     # district
     '''This Test script checking the district button is working or not'''
 
@@ -148,8 +145,6 @@ class TestDashboard:
         else:
             assert False
         self.logger.info("*************** Tc_cQube_homepage_009 Testing Started *****************")
-
-
 
     def test_district_dropdown1(self):
         self.logger.info("*************** Tc_cQube_homepage_010 Testing ended *****************")
@@ -336,7 +331,6 @@ class TestDashboard:
     #             assert False
     #     self.logger.info("*************** Tc_cQube_homepage_006 Testing Ended *****************")
 
-
     def test_bo_block_error_message(self):
         self.logger.info("*************** Tc_cQube_homepage_015 Testing Started *****************")
         self.homepage.test_click_on_block_button()
@@ -397,7 +391,6 @@ class TestDashboard:
             print("Homepage is not displaying ")
             assert False
         self.logger.info("*************** Tc_cQube_homepage_001 Testing ended *****************")
-
 
     '''This Test script checking the A Minus Button '''
 
@@ -563,8 +556,6 @@ class TestDashboard:
                 self.homepage.test_click_block()
             self.homepage.test_click_dist()
             self.logger.info("*************** Tc_cQube_homepage_011 Testing ended *****************")
-
-
 
     def test_co_options_cluster_dropdown(self):
         self.logger.info("*************** Tc_cQube_homepage_012 Testing Started *****************")
@@ -1576,4 +1567,3 @@ class TestDashboard:
             self.logger.error("*********** logout button is not working in class teacher page *********")
             assert False
         self.logger.info("*************** Tc_cQube_homepage_054 Testing ended *****************")
-

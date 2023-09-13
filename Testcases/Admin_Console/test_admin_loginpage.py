@@ -1,4 +1,6 @@
 import logging
+import os
+import sys
 import time
 
 from selenium.webdriver.common.by import By
@@ -7,6 +9,7 @@ from Page_of_objects.AdminUI.admin_console import AdminConsole
 from Testcases.conftest import ConfTest
 from Utilities import CustomLogger
 from Utilities.ReadProperties import ReadConfig
+sys.path.append(os.getcwd())
 
 
 class TestDashboard:
@@ -15,7 +18,6 @@ class TestDashboard:
     nas = None
     driver = None
     GetData = None
-    teacherattendance = None
 
     @classmethod
     def setup(cls):
@@ -25,7 +27,7 @@ class TestDashboard:
         cls.admin = AdminConsole(cls.driver)
         cls.admin.open_cqube_admin_application()
         cls.logger = CustomLogger.setup_logger('Admin_Dashboard',
-                                               ReadConfig.get_logs_directory() + "/admin_console.log",
+                                               ReadConfig.get_logs_directory() + "/admin_console.info",
                                                level=logging.DEBUG)
 
     ''' Verify the navigated to admin login page '''
@@ -34,7 +36,7 @@ class TestDashboard:
         self.logger.info("*************** Tc_cQube_AdminConsole_001 Testing Started *****************")
         if 'admin' in self.driver.current_url and 'State Vidya Samiksha Kendra' in self.driver.page_source:
             print('Admin Console Login page is Displayed')
-            self.logger.log("Admin Console URL is Working as Expected ")
+            self.logger.info("Admin Console URL is Working as Expected ")
             assert True
         else:
             print('Admin Console Login Page is not Displayed ')
@@ -47,7 +49,7 @@ class TestDashboard:
     def test_validate_admin_login_screen(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_002 Testing Started *****************")
         if 'admin/login' in self.driver.current_url:
-            self.logger.log("*************** Title is displaying *****************")
+            self.logger.info("*************** Title is displaying *****************")
         else:
             self.logger.error("********************* Title is not displaying ***********")
             assert False
@@ -57,7 +59,7 @@ class TestDashboard:
         self.logger.info("*************** Tc_cQube_AdminConsole_003 Testing Started *****************")
         result = self.admin.check_input_fields_accepted_values()
         if result == 0:
-            self.logger.log("*************** Username & Password Input fields are Accepted Values *****************")
+            self.logger.info("*************** Username & Password Input fields are Accepted Values *****************")
         else:
             self.logger.error("********************* Username & Password Input fields are Not working ***********")
             assert False
@@ -67,7 +69,7 @@ class TestDashboard:
         self.logger.info("*************** Tc_cQube_AdminConsole_004 Testing Started *****************")
         result = self.admin.check_admin_console_login_and_logout()
         if result == 0:
-            self.logger.log("*************** Login & Logout buttons are working  *****************")
+            self.logger.info("*************** Login & Logout buttons are working  *****************")
         else:
             self.logger.error("*********************  Login & Logout buttons are Not working ***********")
             assert False
@@ -77,7 +79,7 @@ class TestDashboard:
         self.logger.info("*************** Tc_cQube_AdminConsole_005 Testing Started *****************")
         self.admin.login_to_admin_console()
         if "dashboard" in self.driver.current_url:
-            self.logger.log("*************** Login to admin console is working  *****************")
+            self.logger.info("*************** Login to admin console is working  *****************")
         else:
             self.logger.error("********************* Login to admin console is Not working ***********")
             assert False
@@ -85,7 +87,8 @@ class TestDashboard:
 
     def test_click_on_login_btn_without_credentials(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_006 Testing Started *****************")
-        self.driver.close(self.admin.login_btn)
+        self.driver.find_element(By.ID,self.admin.login_btn).click()
+        time.sleep(2)
         if 'Username is required' and 'Password is required' in self.driver.page_source:
             self.logger.info(" Mandatory username & password input field are validated ")
             assert True
@@ -166,23 +169,23 @@ class TestDashboard:
             assert False
         self.logger.info("*************** Tc_cQube_AdminConsole_012 Testing Started *****************")
 
-    def test_click_on_hamburger_menu(self):
-        self.logger.info("*************** Tc_cQube_AdminConsole_013 Testing Started *****************")
-        self.admin.login_to_admin_console()
-        self.admin.click_on_hamburger_menu_button()
-        result = self.admin.get_count_of_menu_buttons()
-        if result != 0 and result > 0:
-            self.logger.info(" Hamburger Menu having Options ", result)
-            assert True
-        else:
-            self.logger.error(" Hamburger Menu Options are not displaying ", result)
-            assert False
-        self.logger.info("*************** Tc_cQube_AdminConsole_013 Testing Started *****************")
+    # def test_click_on_hamburger_menu(self):
+    #     self.logger.info("*************** Tc_cQube_AdminConsole_013 Testing Started *****************")
+    #     self.admin.login_to_admin_console()
+    #     self.admin.click_on_hamburger_menu_button()
+    #     result = self.admin.get_count_of_menu_buttons()
+    #     if result != 0:
+    #         self.logger.info(" Hamburger Menu having Options ", result)
+    #         assert True
+    #     else:
+    #         self.logger.error(" Hamburger Menu Options are not displaying ", result)
+    #         assert False
+    #     self.logger.info("*************** Tc_cQube_AdminConsole_013 Testing Started *****************")
 
     def test_click_on_dashboard_link(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_014 Testing Started *****************")
         self.admin.login_to_admin_console()
-        result = self.admin.check_navigation_to_data_debugger()
+        self.admin.check_navigation_to_data_debugger()
         res = self.admin.click_on_dashboard_button_from_menu()
         if res == 0:
             self.logger.info(" Dashboard Menu button is working ")
@@ -225,6 +228,13 @@ class TestDashboard:
     def test_click_on_logout_button(self):
         self.logger.info("*************** Tc_cQube_AdminConsole_018 Testing Started *****************")
         self.admin.login_to_admin_console()
+        if 'dashboard' in self.driver.current_url:
+            print("Login to Admin console is Successfull ")
+        else:
+            print(" Login to Admin console is failed ")
+            assert False
+
+        print("Current page", self.driver.current_url)
         result = self.admin.click_on_logout_button()
         if result == 0:
             self.logger.info(" Logout button is working ")

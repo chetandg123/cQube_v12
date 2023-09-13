@@ -11,13 +11,13 @@ class AdminConsole(Base):
     username = 'userName'
     password = 'password'
     login_btn = "loginBtn"
-    health_monitor = "dashboardCard0"
+    health_monitor = "systemMonitoringCard"
     usage_dashboard = "usage_dashboard"
-    debugger = "dashboardCard1"
-    schema_generator_icon = "dashboardCard2"
-    user_logo_menu = "user_menulist"
+    debugger = "dataDebuggerCard"
+    schema_generator_icon = "schemaGeneratorCard"
+    user_logo_menu = "userProfileDropdown"
     hamburger_menu = "menuToggler"
-    logout_btn = "logout"
+    logout_btn = "userProfileDropdown"
     a = "State Vidya Samiksha Kendra"
     home_btn = "home"
     dimension_radio = "dimension_radio"
@@ -41,7 +41,7 @@ class AdminConsole(Base):
         self.count = 0
 
     def open_cqube_admin_application(self):
-        self.get_url(ReadConfig.get_application_url())
+        self.get_url(ReadConfig.get_admin_application_url())
 
     def open_cqube_application(self):
         print(ReadConfig.get_application_url())
@@ -60,22 +60,25 @@ class AdminConsole(Base):
         self.click(self.login_btn)
 
     def login_to_admin_console(self):
-        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_username())
-        self.driver.find_element(By.ID, self.password).send_keys(ReadConfig.get_password())
+        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_admin_username())
+        self.driver.find_element(By.ID, self.password).send_keys(ReadConfig.get_admin_password())
         time.sleep(2)
-        self.click(self.login_btn)
+        self.driver.find_element(By.ID, self.login_btn).click()
+        time.sleep(2)
 
     def open_login_page_invalid_password(self):
-        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_username())
-        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_negative_password())
+        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_admin_username())
+        self.driver.find_element(By.ID, self.password).send_keys(ReadConfig.get_negative_password())
         time.sleep(2)
-        self.click(self.login_btn)
+        self.driver.find_element(By.ID, self.login_btn).click()
+        time.sleep(2)
 
     def open_login_page_invalid_username(self):
         self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_negative_username())
-        self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_password())
+        self.driver.find_element(By.ID, self.password).send_keys(ReadConfig.get_password())
         time.sleep(2)
-        self.click(self.login_btn)
+        self.driver.find_element(By.ID, self.login_btn).click()
+        time.sleep(2)
 
     def verify_invalid_username_and_password(self):
         self.driver.find_element(By.ID, self.username).send_keys(ReadConfig.get_negative_username())
@@ -104,18 +107,20 @@ class AdminConsole(Base):
     def check_admin_console_login_and_logout(self):
         self.login_to_admin_console()
         time.sleep(2)
-        self.driver.find_element(By.ID, self.logout_btn).click()
+        self.driver.find_element(By.CLASS_NAME, self.logout_btn).click()
         time.sleep(2)
         if 'login' in self.driver.current_url:
             print('Login & Logout buttons are working as expected ')
             assert True
         else:
             print('Login & Logout buttons are not working ')
-            self.cout = self.count + 1
+            self.count = self.count + 1
             assert False
+        return self.count
 
     def click_on_hamburger_menu_button(self):
         self.driver.find_element(By.ID, self.hamburger_menu).click()
+        time.sleep(1)
 
     def get_count_of_menu_buttons(self):
         res = self.driver.find_elements(By.TAG_NAME, self.li_tag)
@@ -132,14 +137,14 @@ class AdminConsole(Base):
         self.driver.find_element(By.ID, self.debugger).click()
 
     def click_on_the_user_logo(self):
-        self.driver.find_element(By.ID, self.user_logo_menu).click()
+        self.driver.find_element(By.CLASS_NAME, self.user_logo_menu).click()
 
     def click_on_home_button(self):
         self.driver.find_element(By.ID, self.home_btn).click()
 
     def click_on_logout_button(self):
-        self.click_on_the_user_logo()
-        self.driver.find_element(By.ID, self.logout_btn).click()
+        #self.click_on_the_user_logo()
+        self.driver.find_element(By.CLASS_NAME, self.logout_btn).click()
         time.sleep(2)
         if 'login' in self.driver.current_url:
             print('Logout button is working as expected.')
@@ -222,7 +227,7 @@ class AdminConsole(Base):
         username.clear()
         username.send_keys('admin')
         time.sleep(1)
-        if 'admin' in self.driver.page_source:
+        if 'admin' in username.get_attribute('value'):
             print("Username Input field is accepted value ")
             assert True
         else:
@@ -232,7 +237,7 @@ class AdminConsole(Base):
         password.clear()
         password.send_keys('Tibil@123')
         time.sleep(1)
-        if 'Tibil@123' in self.driver.page_source:
+        if 'Tibil@123' in password.get_attribute('value'):
             print(" Password Input field is accepted the value ")
             assert True
         else:
@@ -270,6 +275,7 @@ class AdminConsole(Base):
         time.sleep(2)
         self.driver.switch_to.window(self.driver.window_handles[1])
         time.sleep(2)
+        print(self.driver.current_url)
         if 'grafana' in self.driver.current_url:
             print("Grafana Login page is displayed ")
             assert True
