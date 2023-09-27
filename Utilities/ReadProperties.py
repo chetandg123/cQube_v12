@@ -33,7 +33,7 @@ class ReadConfig:
     def get_username():
         path = ReadConfig()
         config = configparser.RawConfigParser()
-        config.read(path.get_config_ini_path)
+        config.read(path.get_config_ini_path())
         username = config.get('config', 'username')
         return username
 

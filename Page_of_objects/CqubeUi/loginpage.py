@@ -13,7 +13,6 @@ class loginpage(Base):
     def __init__(self, driver):
         super().__init__(driver)
 
-
     # List of selenium locator of dashboard screen
     user_name_field = ""
     password_filed = ""

@@ -2,6 +2,7 @@ import logging
 import os
 import time
 import sys
+
 sys.path.append(os.getcwd())
 from Page_of_objects.CqubeUi.homepage import Homepage
 from Page_of_objects.CqubeUi.loginpage import loginpage
@@ -15,7 +16,6 @@ class TestDashboard:
     driver = None
     loginpage = None
 
-
     @classmethod
     def setup(cls):
         cls.driver = ConfTest.get_driver()
@@ -27,6 +27,7 @@ class TestDashboard:
 
         cls.logger = CustomLogger.setup_logger('Dashboard', ReadConfig.get_logs_directory() + "/Dashboard.log",
                                                level=logging.DEBUG)
+
     '''scripts to validate title'''
 
     def test_validate_title(self):
@@ -69,14 +70,15 @@ class TestDashboard:
             self.logger.error("************* Login page is not displayed **************")
             assert False
         self.logger.info("*************** Tc_cQube_homepage_003 Testing completed *****************")
-    '''scripts to check the login is happening or not'''
+
+    '''scripts to check the login is working or not'''
 
     def test_loginpage(self):
         self.logger.info("*************** Tc_cQube_loginpage_004 Testing Started *****************")
         self.loginpage.open_cqube_application()
         self.loginpage.open_login_page()
         time.sleep(4)
-        if "home" in self.driver.current_url:
+        if "summary-statistics" in self.driver.current_url:
             assert True
             self.logger.info("***********  Login screen is displayed ************** ")
         else:
@@ -101,7 +103,6 @@ class TestDashboard:
         self.logger.info("*************** Tc_cQube_loginpage_005  Testing Ended *****************")
 
     '''scripts to check the login is happening or not with invalid credintials'''
-
 
     def test_check_whether_landing_page_is_not_displayed_user_is_in_login_page1(self):
         self.logger.info("*************** Tc_cQube_loginpage_006 Testing Started *****************")
@@ -145,6 +146,3 @@ class TestDashboard:
             self.logger.error("user is in login page")
             assert False
         self.logger.info("*************** Tc_cQube_loginpage_008  Testing Ended *****************")
-
-
-
