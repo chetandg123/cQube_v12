@@ -7,8 +7,8 @@ from os.path import exists
 
 def setup_logger(logger_name, log_file, level=logging.WARNING):
     # Erase log if already exists
-    if exists(log_file):
-        remove(log_file)
+    # if exists(log_file):
+    #     remove(log_file)
     # Configure log file
     logger = logging.getLogger(logger_name)
     formatter = logging.Formatter('%(asctime)s :%(levelname)s : %(name)s :%(message)s')

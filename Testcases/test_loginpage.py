@@ -2,13 +2,13 @@ import logging
 import os
 import time
 import sys
-
-sys.path.append(os.getcwd())
 from Page_of_objects.CqubeUi.homepage import Homepage
 from Page_of_objects.CqubeUi.loginpage import loginpage
 from Testcases.conftest import ConfTest
 from Utilities import CustomLogger
 from Utilities.ReadProperties import ReadConfig
+
+sys.path.append(os.getcwd())
 
 
 class TestDashboard:
@@ -95,8 +95,7 @@ class TestDashboard:
         time.sleep(3)
         if "Invalid Credentials" in self.driver.page_source:
             assert True
-            self.logger.info("landing page is not displayed")
-
+            self.logger.info("Summary Statistics is not displayed")
         else:
             self.logger.error("user is in login page")
             assert False
